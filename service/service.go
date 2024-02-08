@@ -44,11 +44,13 @@ func (s *Service) Run(ctx context.Context) {
 	wg.Add(2)
 
 	go func() {
+		// тут мы запускаем отдельный воркер, чтобы слушать сообщения из Kafka конвертить их в нашу сущность
 		s.consume(ctx, entityChan)
 		wg.Done()
 	}()
 
 	go func() {
+		// а тут мы уже сконверченные сообщения из кафки собираем по пачкам и сохраняем в базу данных
 		s.collectBatchAndSave(ctx, entityChan)
 		wg.Done()
 	}()
